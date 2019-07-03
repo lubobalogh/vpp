@@ -235,6 +235,9 @@ VAGRANTFILE_API_VERSION = "2"
         k8smaster.vm.network :private_network, ip: k8smaster_ip, netmask: "#{base_prefix_len}", virtualbox__intnet: "true"
       end
 
+      k8smaster.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: '127.0.0.1', guest_ip: '127.0.0.1'
+      k8smaster.vm.network "forwarded_port", guest: 9999, host: 9999, host_ip: '127.0.0.1', guest_ip: '127.0.0.1'
+
       k8smaster.vm.provider "virtualbox" do |v|
         v.customize ["modifyvm", :id, "--ioapic", "on"]
         #v.customize ["modifyvm", :id, "--vram", "128"]
@@ -262,6 +265,14 @@ VAGRANTFILE_API_VERSION = "2"
         s.args = ["k8s-master", k8smaster_ip]
         s.env = env
       end
+
+      k8smaster.vm.provision "shell",
+        privileged: false,
+        run: "always",
+        inline: <<-SHELL
+          nohup kubectl proxy --port=8080 > /dev/null 2>&1 < /dev/null &
+          echo "K8s proxy accessible on port 8080"
+        SHELL
     end
 
     # Configure backup master node(s)
@@ -323,6 +334,14 @@ VAGRANTFILE_API_VERSION = "2"
         else
           node.vm.network :private_network, auto_config: false, virtualbox__intnet: "vpp", nic_type: "82540EM"
           node.vm.network :private_network, ip: node_addr, netmask: "#{base_prefix_len}", virtualbox__intnet: "true"
+        end
+
+        if n == 0
+          node.vm.network "forwarded_port", guest: 8080, host: 8088, host_ip: '127.0.0.1', guest_ip: '127.0.0.1'
+          node.vm.network "forwarded_port", guest: 9999, host: 9991, host_ip: '127.0.0.1', guest_ip: '127.0.0.1'
+        elsif n == 1
+          node.vm.network "forwarded_port", guest: 8080, host: 8089, host_ip: '127.0.0.1', guest_ip: '127.0.0.1'
+          node.vm.network "forwarded_port", guest: 9999, host: 9992, host_ip: '127.0.0.1', guest_ip: '127.0.0.1'
         end
 
         node.vm.provider "virtualbox" do |v|
