@@ -1,8 +1,8 @@
-import { environment } from '../environments/environment';
-
 export class AppConfig {
-  public static K8S_REST_URL = environment.prefix + 'api/k8s/';
-  public static VPP_REST_URL = environment.prefix + 'api/contiv/';
+  public static K8S_REST_URL = 'http://localhost:8080/';
+  public static VPP_REST_URL_MASTER = 'http://localhost:9999/';
+  public static VPP_REST_URL_WORKER1 = 'http://localhost:9991/';
+  public static VPP_REST_URL_WORKER2 = 'http://localhost:9992/';
   public static API_V1 = 'api/v1/';
   public static API_V1_NETWORKING = 'apis/networking.k8s.io/v1/';
   public static API_V1_CONTIV = 'contiv/v1/';
