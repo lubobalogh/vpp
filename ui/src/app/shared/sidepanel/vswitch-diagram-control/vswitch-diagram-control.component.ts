@@ -109,8 +109,10 @@ export class VswitchDiagramControlComponent implements OnInit, OnDestroy {
   public showApi() {
     const fn = this.apiList.find(e => e.name === this.apis).fn;
 
+    const url = this.dataService.getUrl(this.domain.node.name);
+
     this.subscriptions.push(
-      this.vppService[fn](this.domain.node.ip).subscribe(output => this.modalService.showApiOutput(this.apis, JSON.stringify(output)))
+      this.vppService[fn](url).subscribe(output => this.modalService.showApiOutput(this.apis, JSON.stringify(output)))
     );
   }
 

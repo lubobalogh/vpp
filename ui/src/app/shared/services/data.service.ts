@@ -9,6 +9,7 @@ import { VppInterfaceTapModel } from '../models/vpp/vpp-interface-tap-model';
 import { K8sPodModel } from '../models/k8s/k8s-pod-model';
 import { K8sNodeModel } from '../models/k8s/k8s-node-model';
 import { VppIpamModel } from '../models/vpp/vpp-ipam-model';
+import { AppConfig } from '../../app-config';
 
 @Injectable({
   providedIn: 'root'
@@ -91,7 +92,9 @@ export class DataService {
             return of(null);
           }
 
-          return this.vppService.getBridgeDomains(d.node.ip).pipe(
+          const url = this.getUrl(d.node.name);
+
+          return this.vppService.getBridgeDomains(url).pipe(
             map(res => {
               const bdObj = {
                 bd: res
@@ -107,32 +110,35 @@ export class DataService {
     );
   }
 
-  private getArpByIp(vswitchIp: string, ip: string): Observable<VppArpModel> {
-    return this.vppService.getArps(vswitchIp).pipe(
+  private getArpByIp(nodeName: string, ip: string): Observable<VppArpModel> {
+    const url = this.getUrl(nodeName);
+
+    return this.vppService.getArps(url).pipe(
       map(res => res.find(e => e.IP === ip))
     );
   }
 
-  private getTapInterfaceByName(vswitchIp: string, ifName: string): Observable<VppInterfaceTapModel> {
-    return this.vppService.getTapInterfaces(vswitchIp).pipe(
+  private getTapInterfaceByName(nodeName: string, ifName: string): Observable<VppInterfaceTapModel> {
+    const url = this.getUrl(nodeName);
+    return this.vppService.getTapInterfaces(url).pipe(
       map(res => res.find(e => e.name === ifName))
     );
   }
 
-  private getInterfaceByPod(pod: K8sPodModel, vswitchIp: string): Observable<VppInterfaceTapModel> {
-    return this.getArpByIp(vswitchIp, pod.podIp).pipe(
+  private getInterfaceByPod(pod: K8sPodModel, nodeName: string): Observable<VppInterfaceTapModel> {
+    return this.getArpByIp(nodeName, pod.podIp).pipe(
       switchMap(arp => {
-        return arp ? this.getTapInterfaceByName(vswitchIp, arp.interface) : of(null);
+        return arp ? this.getTapInterfaceByName(nodeName, arp.interface) : of(null);
       })
     );
   }
 
-  private getInterfacesByPods(pods: K8sPodModel[], vswitchIp: string): Observable<VppInterfaceTapModel[]> {
+  private getInterfacesByPods(pods: K8sPodModel[], nodeName: string): Observable<VppInterfaceTapModel[]> {
     if (!pods.length) {
       return of(null);
     }
 
-    const observables = pods.map(p => this.getInterfaceByPod(p, vswitchIp));
+    const observables = pods.map(p => this.getInterfaceByPod(p, nodeName));
 
     return forkJoin(observables);
   }
@@ -145,7 +151,9 @@ export class DataService {
             return of(null);
           }
 
-          return this.vppService.getInterfaces(d.node.ip).pipe(
+          const url = this.getUrl(d.node.name);
+
+          return this.vppService.getInterfaces(url).pipe(
             map(res => {
               const ifacesObject = {
                 interfaces: res
@@ -169,7 +177,7 @@ export class DataService {
             return of(null);
           }
 
-          return this.getInterfacesByPods(d.vppPods, d.node.ip).pipe(
+          return this.getInterfacesByPods(d.vppPods, d.node.name).pipe(
             map(res => {
               if (res) {
                 res.forEach((r, i) => {
@@ -223,7 +231,9 @@ export class DataService {
     return this.k8sService.loadNodes().pipe(
       switchMap(nodes => {
         const observables = nodes.map(n => {
-          return this.vppService.getIPAM(n.ip).pipe(
+          const url = this.getUrl(n.name);
+
+          return this.vppService.getIPAM(url).pipe(
             map(ipam => {
               return {
                 node: n,
@@ -236,6 +246,17 @@ export class DataService {
         return forkJoin(observables);
       })
     );
+  }
+
+  public getUrl(nodeName: string): string {
+    switch (nodeName) {
+      case 'k8s-master':
+        return AppConfig.VPP_REST_URL_MASTER;
+      case 'k8s-worker1':
+        return AppConfig.VPP_REST_URL_WORKER1;
+      case 'k8s-worker2':
+        return AppConfig.VPP_REST_URL_WORKER2;
+    }
   }
 
 }
