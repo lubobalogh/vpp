@@ -237,6 +237,7 @@ VAGRANTFILE_API_VERSION = "2"
 
       k8smaster.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: '127.0.0.1', guest_ip: '127.0.0.1'
       k8smaster.vm.network "forwarded_port", guest: 9999, host: 9999, host_ip: '127.0.0.1', guest_ip: '127.0.0.1'
+      k8smaster.vm.network "forwarded_port", guest: 80, host: 4300, host_ip: '127.0.0.1', guest_ip: '127.0.0.1'
 
       k8smaster.vm.provider "virtualbox" do |v|
         v.customize ["modifyvm", :id, "--ioapic", "on"]
@@ -273,6 +274,26 @@ VAGRANTFILE_API_VERSION = "2"
           nohup kubectl proxy --port=8080 > /dev/null 2>&1 < /dev/null &
           echo "K8s proxy accessible on port 8080"
         SHELL
+
+      k8smaster.vm.provision "shell", run: "once", inline: <<-SHELL
+        echo "Installing Node.JS ..."
+        curl -sL https://deb.nodesource.com/setup_8.x | bash -
+        apt-get update -y
+        apt-get install -y nodejs nginx
+        cat /vagrant/nginx/default > /etc/nginx/sites-available/default
+        npm install npm -g
+        echo "Installing Angular ..."
+        npm install --unsafe-perm -g @angular/cli@7.0.2
+        cd #{contiv_dir}/ui
+        npm install
+      SHELL
+
+      k8smaster.vm.provision "shell", run: "always", inline: <<-SHELL
+        cd #{contiv_dir}/ui
+        echo "Building Web App ..."
+        ng build
+        sudo systemctl restart nginx.service
+      SHELL
     end
 
     # Configure backup master node(s)
