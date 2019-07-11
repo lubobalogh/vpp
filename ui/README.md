@@ -6,19 +6,17 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Quickstart
 
-Deploy UI:
-```
-kubectl apply -f https://raw.githubusercontent.com/contiv/vpp/master/k8s/contiv-vpp-ui.yaml
-```
+Run your browser with disabled web security (Important for accessing the APIs)
 
-UI is exposed as nodeport service it can be accessed from web browser at `http://<node-ip>:32500`.
+Google Chrome
 
-In order to forward the service from vagrant machine run:
+-Command in OSX:
+Open -n -a Google\ Chrome --args --disable-web-security --user-data-dir=/tmp/chrome
 
-```
-vagrant ssh-config > vagrant.conf
-ssh -F vagrant.conf -L 32500:127.0.0.1:32500 k8s-master
-```
+-Command in Windows:
+In the "Run" app, enter: chrome.exe --user-data-dir="C://Chrome dev session" --disable-web-security
+
+UI can be accessed from web browser at `http://localhost:4300`.
 
 ## Configuration
 
