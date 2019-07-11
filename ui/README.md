@@ -27,14 +27,14 @@ Shutdown all extraneous apps. You need as much memory as possible on your laptop
 1. clone this repository (`git clone https://github.com/lubobalogh/vpp.git`)
 2. change directory to vpp (`cd vpp`)
 3. checkout 'ipv6' branch (`git checkout ipv6`).
-4. cd into vpp/ui directory (`cd ui`)
+4. cd into vpp/vagrant directory (`cd vagrant`)
 5. from this directory run one of these commands:
 - `./vagrant-start` for fully automated setup - run 2 workers in production enviroment with IPv6 enabled
 
 You should then see this:
 
-	CHMETZ-M-72TZ:vpp chrismetz$ cd ui
-	CHMETZ-M-72TZ:ui chrismetz$ ./vagrant-start
+	CHMETZ-M-72TZ:vpp chrismetz$ cd vagrant
+	CHMETZ-M-72TZ:vagrant chrismetz$ ./vagrant-start
 	Starting Contiv VPP ...
 
 	Creating a production environment, with ipv6 and 2 worker node(s)
@@ -48,12 +48,6 @@ You should then see this:
 	etc ... etc ...
 
 Get a cup of coffee. It will be a few minutes.
-
-When you return, this message indicates the UI is ready.
-
-	For accessing k8s nodes via 'vagrant ssh', cd into vpp/vagrant directory.
-
-	Application has been deployed on http://localhost:4300
 
 When everything is deployed, navigate to `http://localhost:4300/` on Chrome with disabled web security - it should be automatically open if installed. If for some reason it does not automatically open, go to the CLI and type in one of the disable web security commands. This is the one for a mac:
 
