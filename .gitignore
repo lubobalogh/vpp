@@ -16,5 +16,6 @@ docker/development/supervisord.conf
 plugins/controller/example/example
 vagrant/images.tar
 ui/node_modules
+ui/dist
 .vagrant
 .vagrant-state
