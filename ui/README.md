@@ -19,6 +19,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 - VirtualBox
 - Laptop w/ 16GB of memory
 - Only runs on a laptop at this time. It does not support nor can it be deployed on a remote server.
+- [Postman](https://www.getpostman.com/) to look over [APIs](https://github.com/ligato/vpp-agent/tree/dev/plugins/restv2)
 
 ### Running
 
@@ -57,6 +58,9 @@ We need to wait a few moments (could be a couple of minutes) until k8s has compl
 
 
 ### Accessing APIs
+
+#### Postman collection
+[Collection](../docs/ContivVPP.postman_collection.json)
 
 ### Use 'vagrant ssh' to control nodes
 After successful build, you can access created Kubernetes nodes CLI.
