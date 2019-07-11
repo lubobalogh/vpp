@@ -23,7 +23,7 @@ export class VppInterfaceModel {
       if (data.interface.ipAddresses) {
         this.IPS = data.interface.ipAddresses.join(',');
       }
-      this.vrf = data.interface.vrf;
+      this.vrf = data.interface.vrf || data.interface_meta.vrf_ipv6;
       this.type = data.interface.type;
       this.mtu = data.interface.mtu;
       this.enabled = data.interface.enabled;
@@ -53,7 +53,7 @@ export class VppInterfaceModel {
   }
 
   public isTap(): boolean {
-    return this.name && this.name.includes('tap') && this.vrf > 0;
+    return this.type === 'TAP';
   }
 
   public isGig(): boolean {
