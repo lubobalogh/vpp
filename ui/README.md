@@ -10,11 +10,11 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 - Google Chrome - running with [disabled web security](https://stackoverflow.com/questions/3102819/disable-same-origin-policy-in-chrome) (Important for accessing the APIs).
     ##### -Command in OSX:
-    Open -n -a "Google Chrome" --args --disable-web-security --user-data-dir=/tmp/chrome http://localhost:4300
+    `Open -n -a "Google Chrome" --args --disable-web-security --user-data-dir=/tmp/chrome http://localhost:4300`
     ##### -Command in Windows:
-    In the "Run" app, enter: chrome.exe --user-data-dir="C://Chrome dev session" --disable-web-security http://localhost:4300
+    `In the "Run" app, enter: chrome.exe --user-data-dir="C://Chrome dev session" --disable-web-security http://localhost:4300`
     ##### -Command in Linux:
-    google-chrome --user-data-dir="/var/tmp/Chrome" --disable-web-security "http://localhost:4300"
+    `google-chrome --user-data-dir="/var/tmp/Chrome" --disable-web-security "http://localhost:4300"`
 - Vagrant
 - VirtualBox
 - Laptop w/ 16GB of memory
@@ -52,7 +52,7 @@ Get a cup of coffee. It will be a few minutes.
 
 When everything is deployed, navigate to `http://localhost:4300/` on Chrome with disabled web security - it should be automatically open if installed. If for some reason it does not automatically open, go to the CLI and type in one of the disable web security commands. This is the one for a mac:
 
-	Open -n -a "Google Chrome" --args --disable-web-security --user-data-dir=/tmp/chrome http://localhost:4300
+`Open -n -a "Google Chrome" --args --disable-web-security --user-data-dir=/tmp/chrome http://localhost:4300`
 
 We need to wait a few moments (could be a couple of minutes) until k8s has completed its work and all systems are ready to go.
 
