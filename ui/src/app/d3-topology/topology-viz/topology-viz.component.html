@@ -1,9 +1,16 @@
 <div class="topologyContainer">
-  <svg #topology (click)="checkSvgClick($event)">
+  <div class="spin-wrap" *ngIf="isLoading">
+      <span class="spinner spinner-inverse">
+        Loading...
+      </span>
+  </div>
+
+  <svg #topology
+       (click)="checkSvgClick($event)">
     <g id="wrap">
       <g class="content">
-          <g class="links"></g>
-          <g class="nodes"></g>
+        <g class="links"></g>
+        <g class="nodes"></g>
       </g>
     </g>
   </svg>

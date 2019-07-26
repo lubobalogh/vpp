@@ -61,9 +61,11 @@ export class BridgeDomainComponent implements OnInit, OnDestroy {
         this.domain = this.dataService.contivData.contivData[0];
         this.bdId = this.domain.bd[0].name;
 
+        const layoutLoaded = this.layoutService.layoutExists('bd');
+
         const topo: TopologyDataModel = new TopologyDataModel();
         topo.setData(this.topoData.nodes, this.topoData.links);
-        this.topologyService.setTopologyData(topo);
+        this.topologyService.setTopologyData(topo, layoutLoaded);
       }
     });
   }

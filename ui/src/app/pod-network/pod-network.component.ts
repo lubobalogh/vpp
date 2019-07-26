@@ -55,9 +55,11 @@ export class PodNetworkComponent implements OnInit, OnDestroy {
         this.topoData = this.podTopologyService.getTopologyData(this.dataService.contivData);
         this.namespaces = this.dataService.contivData.getNamespaces();
 
+        const layoutLoaded = this.layoutService.layoutExists('vpp');
+
         const topo: TopologyDataModel = new TopologyDataModel();
         topo.setData(this.topoData.nodes, this.topoData.links);
-        this.topologyService.setTopologyData(topo);
+        this.topologyService.setTopologyData(topo, layoutLoaded);
       }
     });
   }

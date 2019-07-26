@@ -27,9 +27,9 @@ import { DataService } from '../../shared/services/data.service';
 export class TopologyVizComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('topology') topologyEl: ElementRef;
 
-  @Input() isLoading: boolean;
   @Input() hasLayers: boolean;
   @Input() svgTransform: SvgTransform;
+  @Input() layoutExists: boolean;
 
   @Output() nodeClicked = new EventEmitter<NodeClickEvent>();
   @Output() nodeDblClicked = new EventEmitter<NodeClickEvent>();
@@ -53,6 +53,8 @@ export class TopologyVizComponent implements OnInit, OnDestroy, AfterViewInit {
     y: number
   };
 
+  public isLoading = false;
+
   constructor(
     private coreService: CoreService,
     private topologyService: TopologyService,
@@ -68,7 +70,13 @@ export class TopologyVizComponent implements OnInit, OnDestroy, AfterViewInit {
       if (this.isDraggingItem) {
         this.forceRender = true;
       } else {
-        this.renderTopology();
+        if (this.topologyService.layoutLoaded) {
+          this.renderTopology();
+        } else {
+          this.isLoading = true;
+        }
+
+        this.forceTopologyLayout();
       }
     });
   }
@@ -86,7 +94,13 @@ export class TopologyVizComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.topologyVizService.setSvgObject(this.svg);
     this.topologyVizService.setZoomBeh(zoomBeh);
-    this.renderTopology();
+
+    if (this.topologyService.layoutLoaded) {
+      this.renderTopology();
+    } else {
+      setTimeout(() => this.isLoading = true, 0);
+      this.forceTopologyLayout();
+    }
 
     if (this.svgTransform) {
       this.svg.select('#wrap')
@@ -134,8 +148,10 @@ export class TopologyVizComponent implements OnInit, OnDestroy, AfterViewInit {
     const self = this;
 
     return function() {
+      self.isLoading = false;
       self.positionsChanged.emit(self.topologyService.getTopologyData());
       self.dataService.allowRefresh();
+      self.renderTopology();
     };
   }
 
@@ -166,7 +182,6 @@ export class TopologyVizComponent implements OnInit, OnDestroy, AfterViewInit {
     this.renderLinks(this.topologyService.getTopologyData().links, {selector: '.links'});
     this.renderNodes(this.topologyService.getTopologyData().nodes, {selector: '.nodes'});
     this.appendEventsToTopologyItems();
-    this.forceTopologyLayout();
 
     if (this.topologyService.getTopologyData().nodes.length) {
       this.topologyRendered.emit(true);

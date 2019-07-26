@@ -68,9 +68,11 @@ export class ServicesComponent implements OnInit, OnDestroy {
 
             this.topoData = this.servicesTopologyService.getTopologyData(this.dataService.contivData);
 
+            const layoutLoaded = this.layoutService.layoutExists('svc');
+
             const topo: TopologyDataModel = new TopologyDataModel();
             topo.setData(this.topoData.nodes, this.topoData.links);
-            this.topologyService.setTopologyData(topo);
+            this.topologyService.setTopologyData(topo, layoutLoaded);
           });
         });
       }

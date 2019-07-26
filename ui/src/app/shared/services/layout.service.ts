@@ -23,6 +23,12 @@ export class LayoutService {
     private coreService: CoreService
   ) { }
 
+  public layoutExists(type: string): boolean {
+    const topologyType = type + '-topo';
+
+    return this.nodesPositions[topologyType] ? true : false;
+  }
+
   public getBVIPosition(vswitch: NodeData): {x: number, y: number} {
     return {x: vswitch.x, y: vswitch.y};
   }

@@ -51,9 +51,11 @@ export class KubernetesComponent implements OnInit, OnDestroy {
         this.topoData = this.k8sTopologyService.getTopologyData(this.dataService.contivData);
         this.namespaces = this.dataService.contivData.getNamespaces();
 
+        const layoutLoaded = this.layoutService.layoutExists('k8s');
+
         const topo: TopologyDataModel = new TopologyDataModel();
         topo.setData(this.topoData.nodes, this.topoData.links);
-        this.topologyService.setTopologyData(topo);
+        this.topologyService.setTopologyData(topo, layoutLoaded);
       }
     });
   }

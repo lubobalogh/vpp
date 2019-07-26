@@ -15,11 +15,13 @@ export class TopologyService {
   private topologyTransformSubject: Subject<SvgTransform> = new Subject<SvgTransform>();
   private topologyData: TopologyDataModel = new TopologyDataModel();
   private topologyTransform: SvgTransform;
+  public layoutLoaded: boolean;
 
   constructor() { }
 
-  public setTopologyData(topologyData: TopologyDataModel) {
+  public setTopologyData(topologyData: TopologyDataModel, layoutLoaded: boolean) {
     this.topologyData = topologyData;
+    this.layoutLoaded = layoutLoaded;
     this.updateTopology();
   }
 
